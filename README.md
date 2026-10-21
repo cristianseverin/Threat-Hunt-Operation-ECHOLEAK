@@ -242,19 +242,10 @@ system_prompt_cormorant_capital
 
 These values demonstrate information embedded in the URLs. They do not reconstruct the full contents of the accessed documents.
 
-### Supporting KQL
+### Supporting KQL - Same as Section 2
 
-```kusto
-CopilotAudit_CL
-| where RunId == "el--17-20260920"
-| where SessionId == "cp-emily-20261007-1042"
-| where InteractionType == "Response"
-| where CopilotResponse contains "metrics-cdn.analyticshub.io"
-| project TimeGenerated, SessionId, CopilotResponse
-| order by TimeGenerated asc
-```
+<img width="738" height="176" alt="image" src="https://github.com/user-attachments/assets/34577deb-9456-41ee-8089-219fdcbaf390" />
 
-<!-- Add screenshot: External image URLs inside CopilotResponse. -->
 
 ### CoSnitch: Configuration Exposure
 
@@ -270,7 +261,7 @@ This information could help an attacker tailor follow-on injections and identify
 
 However, it was text in a generated response. The exports do not independently authenticate it as the actual tenant configuration or prove that the stated permissions were effective.
 
-<!-- Add screenshot: System configuration response and associated external image link. -->
+<img width="498" height="709" alt="image" src="https://github.com/user-attachments/assets/f2b50b18-4e31-4a90-a0a9-e97099cbcef2" />
 
 ### Exact Exfiltrated Content
 
