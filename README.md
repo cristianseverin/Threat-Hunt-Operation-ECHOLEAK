@@ -174,22 +174,19 @@ Identify the initial documents accessed during the anomalous session.
 
 `CopilotAudit_CL` recorded the corresponding `Graph.ReadFile` calls. `OfficeActivity_CL` recorded successful access events for the same five files.
 
-### Supporting KQL
+<img width="1118" height="275" alt="image" src="https://github.com/user-attachments/assets/6203c798-a341-43a5-9bff-f3cf42e7094c" />
+
+
+### Supporting KQL - Same as in Section 2
 
 ```kusto
+let start_time = todatetime("2026-09-20T09:00:00.0000000Z");
 CopilotAudit_CL
-| where RunId == "el--17-20260920"
-| where SessionId == "cp-emily-20261007-1042"
-| where ToolName == "Graph.ReadFile"
-| extend Parameters = parse_json(ToolParameters)
-| project TimeGenerated,
-    FileName = tostring(Parameters.fileName),
-    FileId = tostring(Parameters.fileId),
-    SensitivityLabels
+| where TimeGenerated > start_time
 | order by TimeGenerated asc
+| where RunId contains "el--17-20260920"
+| where UserId contains "emily"
 ```
-
-<!-- Add screenshot: Initial five file reads and sensitivity labels. -->
 
 ### Why This Was Suspicious
 
