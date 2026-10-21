@@ -91,28 +91,19 @@ The email presented the attachment as a routine quarterly market review. Emily l
 
 The delay supports a user-dependent sequence in this lab. Delivery alone did not immediately trigger the observed collection.
 
+<img width="1277" height="664" alt="image" src="https://github.com/user-attachments/assets/d2861358-83c0-4094-8ad4-f2987e0e6310" />
+
+
 ### Supporting KQL
 
 ```kusto
+let start_time = todatetime("2026-09-20T09:00:00.0000000Z");
 OfficeActivity_CL
-| where RunId == "el--17-20260920"
-| where UserId =~ "emily.chen@cormorantcapital.com"
-| where TimeGenerated between (
-    datetime(2026-09-20T09:00:00Z) ..
-    datetime(2026-09-20T11:00:00Z)
-)
-| where
-    (Operation == "MessageReceived"
-        and SenderAddress == "quarterly.reports@globalfinancereview.net")
-    or
-    (Operation == "FileAccessed"
-        and OfficeObjectId contains "Q3-2026-Global-Markets-Review.docx")
-| project TimeGenerated, Operation, SenderAddress,
-    Subject, AttachmentNames, OfficeObjectId
+| where TimeGenerated > start_time
 | order by TimeGenerated asc
+| where RunId contains "el--17-20260920"
+| where UserId contains "emily"
 ```
-
-<!-- Add screenshot: Delivery email and first access to the quarterly report. -->
 
 **Evidence limitation:** The lab explanation describes hidden instructions inside the document. The supplied audit exports do not expose the document body or independently verify its formatting.
 
@@ -148,6 +139,8 @@ CopilotAudit_CL
 | project TimeGenerated, InteractionType, UserPrompt,
     ToolName, ToolParameters, CopilotResponse
 | order by TimeGenerated asc
+
+
 ```
 
 <!-- Add screenshot: Original user prompt followed by unrelated Graph searches and file reads. -->
