@@ -24,7 +24,6 @@ A hands-on threat hunt investigating how a malicious document redirected Microso
 - [Investigation Timeline](#investigation-timeline)
 - [Indicators and Investigation Pivots](#indicators-and-investigation-pivots)
 - [MITRE ATT&CK and ATLAS Mapping](#MITRE-ATT&CK-and-ATLAS-Mapping)
-- [Lessons Learned](#Mapping-References)
 
 ---
 
