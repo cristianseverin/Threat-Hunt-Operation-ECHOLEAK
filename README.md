@@ -23,7 +23,7 @@ A hands-on threat hunt investigating how a malicious document redirected Microso
 - [Section 6: Expanded Collection and Impact](#section-6-expanded-collection-and-impact)
 - [Investigation Timeline](#investigation-timeline)
 - [Indicators and Investigation Pivots](#indicators-and-investigation-pivots)
-- [MITRE ATT&CK and ATLAS Mapping](#MITRE-ATT&CK-and-ATLAS-Mapping)
+- [MITRE ATT&CK and ATLAS Mapping](#mitre-att&ck-and-atlas-mapping)
 
 ---
 
