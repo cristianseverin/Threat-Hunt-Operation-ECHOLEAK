@@ -104,8 +104,7 @@ OfficeActivity_CL
 | where RunId contains "el--17-20260920"
 | where UserId contains "emily"
 ```
-
-**Evidence limitation:** The lab explanation describes hidden instructions inside the document. The supplied audit exports do not expose the document body or independently verify its formatting.
+To identify which exact email was the phishing email, I ran a KQL query from what I already knew, which was the approximate time it happened, searching the OfficeActivity_CL table for all of Emily's emails. 
 
 ---
 
@@ -129,16 +128,18 @@ Within seconds, Copilot issued searches unrelated to summarizing the report:
 
 It then used `Graph.ReadFile` to read sensitive documents across multiple departments.
 
+<img width="1290" height="593" alt="image" src="https://github.com/user-attachments/assets/61d61b02-3adb-41ea-bf49-1c14bebe3bcd" />
+
+
 ### Supporting KQL
 
 ```kusto
+let start_time = todatetime("2026-09-20T09:00:00.0000000Z");
 CopilotAudit_CL
-| where RunId == "el--17-20260920"
-| where UserId =~ "emily.chen@cormorantcapital.com"
-| where SessionId == "cp-emily-20261007-1042"
-| project TimeGenerated, InteractionType, UserPrompt,
-    ToolName, ToolParameters, CopilotResponse
+| where TimeGenerated > start_time
 | order by TimeGenerated asc
+| where RunId contains "el--17-20260920"
+| where UserId contains "emily"
 
 
 ```
