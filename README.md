@@ -286,24 +286,7 @@ Determine whether the session could reasonably be explained as normal Copilot us
 | Ordinary text responses without the observed external image destination | Responses containing external image URLs with encoded values |
 | No comparable configuration disclosure | Response displaying a system prompt and enterprise configuration |
 
-### Supporting KQL
-
-```kusto
-CopilotAudit_CL
-| where RunId == "el--17-20260920"
-| where UserId =~ "emily.chen@cormorantcapital.com"
-| summarize
-    Prompts = countif(InteractionType == "Prompt"),
-    SearchCalls = countif(ToolName == "Graph.SearchFiles"),
-    FileReadCalls = countif(ToolName == "Graph.ReadFile"),
-    ExternalLinkResponses = countif(
-        CopilotResponse contains "metrics-cdn.analyticshub.io"
-    )
-    by SessionId
-| order by FileReadCalls desc
-```
-
-<!-- Add screenshot: Session comparison showing the anomalous search/read activity and external links. -->
+<img width="1297" height="644" alt="image" src="https://github.com/user-attachments/assets/f67deac3-9a77-42a0-907c-7f761453c479" />
 
 ### Authentication Context
 
@@ -312,6 +295,9 @@ The supplied Entra export contained two successful sign-ins for Emily from the s
 Those two records did not show an obvious sign-in anomaly. They also did not prove the absence of account compromise or establish the token used for each Copilot action.
 
 The investigation therefore relied on the interaction’s behavior, rather than treating successful authentication as proof of legitimate activity.
+
+<img width="1302" height="467" alt="image" src="https://github.com/user-attachments/assets/4f259b25-2a16-40dd-9d1d-812795c9ef79" />
+
 
 ---
 
@@ -346,26 +332,11 @@ Those searches were followed by reads of eight additional files:
 
 At **10:46:35 UTC**, a response contained external image links with encoded names corresponding to these documents.
 
-### Supporting KQL
-
-```kusto
-CopilotAudit_CL
-| where RunId == "el--17-20260920"
-| where SessionId == "cp-emily-20261007-1042"
-| where ToolName == "Graph.ReadFile"
-| extend Parameters = parse_json(ToolParameters)
-| extend FileId = tostring(Parameters.fileId),
-    FileName = tostring(Parameters.fileName)
-| summarize
-    FirstReadUTC = min(TimeGenerated),
-    ReadCalls = count()
-    by FileId, FileName
-| order by FirstReadUTC asc
-```
 
 **Result:** 13 distinct target files, comprising the initial five and eight additional files. This excludes the quarterly report used as the delivery document.
 
-<!-- Add screenshot: Expanded searches and all 13 distinct target files. -->
+<img width="494" height="517" alt="image" src="https://github.com/user-attachments/assets/4d9055cc-5bab-434b-9262-ea7170cd263f" />
+
 
 ### Impact Assessment
 
