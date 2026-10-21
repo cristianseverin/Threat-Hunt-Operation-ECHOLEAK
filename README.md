@@ -387,28 +387,26 @@ The Graph-call and Office-access timestamps differ slightly for some additional 
 Graph tool names are legitimate capabilities, not malicious indicators by themselves. Their relevance comes from the task mismatch, target files, timing, and generated external links.
 
 ---
+## MITRE ATT&CK and ATLAS Mapping
 
-## Recommended Response
+The following mappings describe the observed behavior and the lab’s attack model. They do not establish operating-system code execution or confirmed external receipt of data.
 
-These are recommendations arising from the hunt, not actions demonstrated as completed.
+| Framework | Tactic / Stage | Technique | Evidence in This Hunt |
+|---|---|---|---|
+| ATT&CK | Initial Access (TA0001) | Phishing: Spearphishing Attachment (T1566.001) | An external sender delivered the quarterly-report document that preceded the anomalous Copilot activity. |
+| ATT&CK | Execution (TA0002) | User Execution: Malicious File (T1204.002), contextual mapping | Emily opened the document and invoked Copilot. This represents the user-dependent trigger described by the lab, rather than confirmed execution of malicious code. |
+| ATLAS | Prompt Injection | LLM Prompt Injection: Indirect (AML.T0051.001) | The lab identifies document-borne instructions as the cause of Copilot’s deviation from the legitimate summary request. The document’s hidden payload was not included in the audit exports. |
+| ATT&CK | Collection (TA0009) | Data from Information Repositories: SharePoint (T1213.002) | Graph searches and file-read calls accessed 13 distinct target files across organizational SharePoint sites. |
 
-1. **Preserve evidence and contain the document.** Retain the original message, attachment, interaction records, and audit logs. Quarantine the message and document through approved procedures.
-2. **Investigate external delivery.** Seek image-proxy, cloud-service, secure web gateway, or destination-side evidence to determine whether the generated URLs were fetched.
-3. **Hunt for recurrence.** Search for the sender, attachment, destination domain, and comparable response patterns across other users and sessions.
-4. **Review access to sensitive repositories.** Check whether Emily’s access was necessary and whether SharePoint/OneDrive permissions exposed excessive sensitive material.
-5. **Assess information exposure.** Validate any disclosed configuration against actual settings and involve relevant data owners to determine potential impact.
-6. **Improve AI-specific monitoring.** Correlate external-document summarization with unrelated sensitive searches, rapid cross-department reads, and external links in generated responses.
+### Exfiltration Assessment
 
-Blocking the destination is one containment measure. Endpoint-only blocking may be insufficient if the actual fetch occurs through cloud infrastructure.
+Copilot responses contained external image URLs carrying Base64-encoded filenames and a configuration marker. These support an apparent image-request exfiltration attempt.
 
----
+The supplied logs do not establish completed HTTP requests or an existing command-and-control channel. Therefore, **Exfiltration Over C2 Channel (T1041)** is not asserted as a confirmed mapping.
 
-## Lessons Learned
+### Mapping References
 
-- **A legitimate user request can precede malicious tool behavior.** The user’s visible prompt was ordinary; the deviation appeared in subsequent searches, reads, and responses.
-- **Successful authentication does not establish legitimate intent.** The suspicious behavior occurred without an obvious anomaly in the supplied sign-in records.
-- **Cloud audit and interaction logs complement each other.** Office activity showed access, while Copilot telemetry revealed the searches, tool calls, and generated links.
-- **Encoded data is not the same as complete document contents.** The visible URL values decoded to filenames and a marker, limiting conclusions about actual data loss.
-- **Validate the handoff against the evidence.** Timestamp differences, limited access history, and missing HTTP telemetry affected what could be stated confidently.
-
-This hunt strengthened my experience with KQL, Microsoft 365 audit analysis, session correlation, indirect prompt injection investigations, and evidence-based reporting.
+- [MITRE: Spearphishing Attachment](https://attack.mitre.org/techniques/T1566/001/)
+- [MITRE: User Execution, Malicious File](https://attack.mitre.org/techniques/T1204/002/)
+- [MITRE: Data from Information Repositories, SharePoint](https://attack.mitre.org/techniques/T1213/002/)
+- [MITRE ATLAS](https://atlas.mitre.org/)
